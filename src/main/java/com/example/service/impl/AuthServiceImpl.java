@@ -2,6 +2,8 @@ package com.example.service.impl;
 
 import com.example.dto.AdminRegisterRequest;
 import com.example.dto.UserRegisterRequest;
+import com.example.dto.UserResponse;
+import com.example.dto.LoginRequest;
 import com.example.entity.Business;
 import com.example.entity.User;
 import com.example.repository.BusinessRepository;
@@ -23,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
 //    }
 
     @Override
-    public void registerAdmin(AdminRegisterRequest request) {
+    public UserResponse registerAdmin(AdminRegisterRequest request) {
         Business business = Business.builder()
                 .businessName(request.getBusinessName())
                 .build();
@@ -38,11 +40,23 @@ public class AuthServiceImpl implements AuthService {
                 .business(business)
                 .build();
 
-        userRepository.save(user);
+//        userRepository.save(user);
+        user = userRepository.save(user);
+
+        return UserResponse.builder()
+//                .userId(user.getUserId())
+                .userId(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .location(user.getLocation())
+                .businessId(business.getBusinessId())
+                .businessName(business.getBusinessName())
+                .build();
     }
 
     @Override
-    public void registerUser(UserRegisterRequest request) {
+    public UserResponse registerUser(UserRegisterRequest request) {
         Business business = businessRepository.findById(request.getBusinessId())
                 .orElseThrow(() -> new RuntimeException("Business not found"));
 
@@ -55,6 +69,37 @@ public class AuthServiceImpl implements AuthService {
                 .business(business)
                 .build();
 
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        return UserResponse.builder()
+                .userId(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .location(user.getLocation())
+                .businessId(business.getBusinessId())
+                .businessName(business.getBusinessName())
+                .build();
+    }
+
+    @Override
+    public UserResponse login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // In production, you should use proper password encryption/comparison
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        return UserResponse.builder()
+                .userId(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .location(user.getLocation())
+                .businessId(user.getBusiness().getBusinessId())
+                .businessName(user.getBusiness().getBusinessName())
+                .build();
     }
 }
