@@ -17,10 +17,10 @@ public class AuthServiceImpl implements AuthService {
     private final BusinessRepository businessRepository;
     private final UserRepository userRepository;
 
-    public AuthServiceImpl(BusinessRepository businessRepository, UserRepository userRepository) {
-        this.businessRepository = businessRepository;
-        this.userRepository = userRepository;
-    }
+//    public AuthServiceImpl(BusinessRepository businessRepository, UserRepository userRepository) {
+//        this.businessRepository = businessRepository;
+//        this.userRepository = userRepository;
+//    }
 
     @Override
     public void registerAdmin(AdminRegisterRequest request) {

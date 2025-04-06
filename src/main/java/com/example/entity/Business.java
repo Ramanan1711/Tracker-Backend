@@ -21,6 +21,6 @@ public class Business {
     @Column(name = "business_name", nullable = false, unique = true)
     private String businessName;
 
-    public static Object builder() {
-    }
+//    public static Object builder() {
+//    }
 }
